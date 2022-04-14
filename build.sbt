@@ -104,6 +104,7 @@ val slf4jVersion = "1.7.36"
 val sparkeyVersion = "3.2.1"
 val sparkVersion = "2.4.8"
 val tensorFlowVersion = "0.3.3"
+val testContainersVersion = "0.40.5"
 val zoltarVersion = "0.6.0-M2"
 val scalaCollectionCompatVersion = "2.7.0"
 
@@ -714,6 +715,7 @@ lazy val `scio-elasticsearch8`: Project = project
   .in(file("scio-elasticsearch/es8"))
   .settings(commonSettings)
   .settings(publishSettings)
+  .settings(itSettings)
   .settings(
     description := "Scio add-on for writing to Elasticsearch",
     libraryDependencies ++= Seq(
@@ -721,13 +723,18 @@ lazy val `scio-elasticsearch8`: Project = project
       "org.apache.beam" % "beam-sdks-java-core" % beamVersion,
       "org.slf4j" % "slf4j-api" % slf4jVersion,
       "co.elastic.clients" % "elasticsearch-java" % elasticsearch8Version,
-      "org.scalatest" %% "scalatest" % scalatestVersion % "test"
+      "org.scalatest" %% "scalatest" % scalatestVersion % "test,it",
+      "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion % "it",
+      "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion % "it",
+      "com.dimafeng" %% "testcontainers-scala-scalatest" % testContainersVersion % "it",
+      "com.dimafeng" %% "testcontainers-scala-elasticsearch" % testContainersVersion % "it"
     )
   )
   .dependsOn(
     `scio-core`,
-    `scio-test` % "test"
+    `scio-test` % "test,it"
   )
+  .configs(IntegrationTest)
 
 lazy val `scio-extra`: Project = project
   .in(file("scio-extra"))
